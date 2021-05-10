@@ -46,4 +46,4 @@ jobs:
             --async \
             --solc-version 0.6.12 \
             --check-properties \
-            contracts/VestingControllerTest.sol --include VestingControllerTest 
+            contracts/vesting/VestingControllerTest.sol --include VestingControllerTest 
