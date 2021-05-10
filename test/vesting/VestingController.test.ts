@@ -59,7 +59,7 @@ describe("VestingController", function () {
   });
   describe("initialize()", function () {
     it("initialize() should set the right vestingToken address", async function () {
-      let vestingTokenAddr = await this.vestingController.VESTING_TOKEN.call();
+      let vestingTokenAddr = await this.vestingController.VEGA_TOKEN.call();
       expect(vestingTokenAddr).to.equal(this.erc20GovToken.address);
     });
   });

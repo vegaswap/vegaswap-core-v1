@@ -7,9 +7,11 @@ scripts/000_tmp.js
 .env
 .openzeppelin
 artifacts/
+build/
 cache/
+coverage.json
+coverage/
 crytic-export/
 node_modules/
 secrets.json
 typechain/
-build/

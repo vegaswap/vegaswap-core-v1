@@ -153,12 +153,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     uint256 _cliffTime,
     uint256 _terminalPeriodInMonth,
     uint256 _totalAmount
-  )
-    public
-    onlyOwner
-    notZeroAddress(_updatedAddress)
-    validVestingScheduleTimes(_cliffTime)
-  {
+  ) public onlyOwner notZeroAddress(_updatedAddress) validVestingScheduleTimes(_cliffTime) {
     VestingSchedule storage vestingSchedule = vestingSchedules[_updatedAddress];
     require(vestingSchedule.isAdded == true, "VESTING: INVALID_VESTING_SCHEDULE_ADDRESS");
 
