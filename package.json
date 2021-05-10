@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "hardhat compile",
+    "compile": "hardhat compile",
     "console": "hardhat console",
     "ropsten:deploy": "hardhat --network ropsten deploy_old",
     "ropsten:verify": "hardhat --network ropsten etherscan-verify --solc-input --license UNLICENSED",
