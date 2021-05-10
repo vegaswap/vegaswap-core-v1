@@ -21,11 +21,15 @@ import { removeConsoleLog } from "hardhat-preprocessor";
 
 import { task } from "hardhat/config";
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const accounts = {
   mnemonic: process.env.MNEMONIC || "test test test test test test test test test test test junk",
   accountsBalance: "990000000000000000000",
 }
+
+const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY || ""; // ignore typecheck for workflow to run
+const TEST_PRIVATE_KEY = process.env.TEST_PRIVATE_KEY ? `0x${process.env.TEST_PRIVATE_KEY}` : ZERO_ADDRESS;
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -138,34 +142,27 @@ module.exports = {
     //   chainId: 1,
     // },
     ropsten: {
-      url: `https://eth-ropsten.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
-      accounts: [`0x${process.env.ROPSTEN_PRIVATE_KEY}`],
+      url: `https://eth-ropsten.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+      accounts: [TEST_PRIVATE_KEY],
       chainId: 3,
       live: true,
       gasPrice: 20000000000,
-      saveDeployments: true,
-    },
-    kovan: {
-      url: `https://kovan.infura.io/v3/${process.env.INFURA_API_KEY}`,
-      accounts,
-      chainId: 42,
-      live: true,
       saveDeployments: true,
     },
     bsctestnet: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
       chainId: 97,
       gasPrice: 20000000000,
-      accounts: [`0x${process.env.BSC_TESTNET_PRIVATE_KEY}`],
+      accounts: [TEST_PRIVATE_KEY],
     },
     rinkeby: {
-      url: `https://eth-rinkeby.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
-      accounts: [`0x${process.env.RINKEBY_PRIVATE_KEY}`],
+      url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+      accounts: [TEST_PRIVATE_KEY],
       chainId: 4,
     },
     vegatestnet: {
       url: `http://etestnet.vegaswap.io:8545`,
-      accounts: [`0x${process.env.RINKEBY_PRIVATE_KEY}`],
+      accounts: [TEST_PRIVATE_KEY],
       chainId: 777,
     },
   },
