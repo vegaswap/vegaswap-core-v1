@@ -1,16 +1,15 @@
-node_modules
-.env
-
-#Hardhat files
-cache
-artifacts
-.openzeppelin
-secrets.json
-build/
-
 scripts/000_tmp.js
-scripts/000_tmp.ts
-*.csv
 
 # idea
 .idea
+*.csv
+
+.env
+.openzeppelin
+artifacts/
+cache/
+crytic-export/
+node_modules/
+secrets.json
+typechain/
+build/
