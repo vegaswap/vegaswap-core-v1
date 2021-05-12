@@ -53,7 +53,7 @@ async function main() {
     }
   }
 
-  // const vestin
+  // const vesting
   const vestingLogs = [];
   let log;
   const registerScheduleJs = async function (_vestingSchedule) {
@@ -66,6 +66,7 @@ async function main() {
     );
     vestingLogs.push(vestingLog(_vestingSchedule));
   }
+
   const vestingSchedule = {
     address: '0x989129a75c79EB00c44b3f3f166EE30BA136D6F2', // Mike
     cliff: ((await latest()).add(duration.seconds(10))),
@@ -104,7 +105,6 @@ async function main() {
     }
     console.log(`Amount of address: ${addr}: ${amount}`)
   }
-
 
   let vestingBals = [];
   const addresses = [
