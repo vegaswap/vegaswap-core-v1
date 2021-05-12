@@ -2,6 +2,7 @@
 
 pragma solidity 0.6.12;
 
+import "hardhat/console.sol"; // TODO: Toggle
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
@@ -76,6 +77,14 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     VEGA_TOKEN = IERC20(_VEGA_TOKEN_ADDR);
     vestingTokenAddress = _VEGA_TOKEN_ADDR;
     DEFAULT_PERIOD = 30 days;
+
+    uint256 totalSupply = VEGA_TOKEN.totalSupply();
+    console.log("[sc] initialize, totalSupply: %s", totalSupply);
+
+    // TODO: Define buckets
+    // registerVestingSchedule(
+    //   _seed,
+    // );
   }
 
   // util function

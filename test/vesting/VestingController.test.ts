@@ -529,6 +529,7 @@ describe("VestingController", function () {
   // TODO: test release function owner only
 
   // TODO integration test
+  // This is defined in initialize
   describe("VEGA release schedule", async function () {
     beforeEach(async function () {
       const { accounts } = await getContext();
