@@ -80,7 +80,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
   }
 
   // util function
-  function ceil(uint256 a, uint256 m) private view returns (uint256) {
+  function ceil(uint256 a, uint256 m) private pure returns (uint256) {
     uint256 t = a % m;
     if (t == 0) {
       return a.div(m);
