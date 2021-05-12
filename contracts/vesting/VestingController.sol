@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity 0.6.12;
-// pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
@@ -76,7 +75,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     __Ownable_init();
     VEGA_TOKEN = IERC20(_VEGA_TOKEN_ADDR);
     vestingTokenAddress = _VEGA_TOKEN_ADDR;
-    DEFAULT_PERIOD = 30 days; // TODO: Move to default 30 days again
+    DEFAULT_PERIOD = 30 days;
   }
 
   // util function
@@ -98,18 +97,10 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
 
   function registerVestingSchedule(
     address _registeredAddress,
-    //        address _depositorAddr,
     uint256 _cliffTime,
     uint256 _terminalPeriodInMonth,
     uint256 _totalAmount
-  )
-    public
-    onlyOwner
-    notZeroAddress(_registeredAddress)
-    //    notZeroAddress(_depositorAddr)
-    //    notConfirmedVestingSchedule(_addressToRegister)
-    validVestingScheduleTimes(_cliffTime)
-  {
+  ) public onlyOwner notZeroAddress(_registeredAddress) validVestingScheduleTimes(_cliffTime) {
     require(vestingSchedules[_registeredAddress].isAdded == false, "VESTING: ADDRESS_ALREADY_REGISTERED");
     uint256 amountPerTerminalPeriod;
     if (_terminalPeriodInMonth == 0) {
@@ -129,7 +120,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       terminalPeriodInMonth: _terminalPeriodInMonth,
       amountPerTerminalPeriod: amountPerTerminalPeriod,
       totalAmount: _totalAmount,
-      totalWithdrawnAmount: 0, //        depositor: _depositorAddr,
+      totalWithdrawnAmount: 0,
       isConfirmed: false,
       isAdded: true
     });
@@ -137,19 +128,11 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     // keep track in array to loop later
     registeredAddresses.push(_registeredAddress);
 
-    VestingScheduleRegistered(
-      _registeredAddress,
-      //            _depositorAddr,
-      startTime,
-      _cliffTime,
-      endTime,
-      _totalAmount
-    );
+    VestingScheduleRegistered(_registeredAddress, startTime, _cliffTime, endTime, _totalAmount);
   }
 
   function updateVestingSchedule(
     address _updatedAddress,
-    //        address _depositorAddr,
     uint256 _cliffTime,
     uint256 _terminalPeriodInMonth,
     uint256 _totalAmount
@@ -176,60 +159,13 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       terminalPeriodInMonth: _terminalPeriodInMonth,
       amountPerTerminalPeriod: amountPerTerminalPeriod,
       totalAmount: _totalAmount,
-      totalWithdrawnAmount: 0, //        depositor: _depositorAddr,
+      totalWithdrawnAmount: 0,
       isConfirmed: false,
       isAdded: true
     });
 
-    VestingScheduleUpdated(
-      _updatedAddress,
-      //            _depositorAddr,
-      startTime,
-      _cliffTime,
-      endTime,
-      _totalAmount
-    );
+    VestingScheduleUpdated(_updatedAddress, startTime, _cliffTime, endTime, _totalAmount);
   }
-
-  //
-  //    function confirmVestingSchedule(
-  //        uint256 _startTime,
-  //        uint256 _cliffTime,
-  //        uint256 _endTime,
-  //        uint256 _totalAmount
-  //    )
-  //        public
-  //        addressRegistered(_msgSender())
-  //        notConfirmedVestingSchedule(_msgSender())
-  //    {
-  //        VestingSchedule storage vestingSchedule =
-  //            vestingSchedules[_msgSender()];
-  //
-  //        require(vestingSchedule.startTime == _startTime, "INVALID_START_TIME");
-  //        require(vestingSchedule.endTime == _endTime, "INVALID_END_TIME");
-  //        require(vestingSchedule.cliffTime == _cliffTime, "INVALID_CLIFF_TIME");
-  //        require(vestingSchedule.totalAmount == _totalAmount, "INVALID_AMOUNT");
-  //
-  //        vestingSchedule.isConfirmed = true;
-  //        // move totalAmount to VestingTotalController
-  //        require(
-  //            vestingToken.transferFrom(
-  //                vestingSchedule.depositor,
-  //                address(this),
-  //                _totalAmount
-  //            )
-  //        );
-  //
-  //        VestingScheduleConfirmed(
-  //            _msgSender(),
-  //            vestingSchedule.depositor,
-  //            _startTime,
-  //            _cliffTime,
-  //            _endTime,
-  //            _totalAmount
-  //        );
-  //    }
-  //
 
   // All pre checking should be done at caller
   function getVestedAmount(
@@ -269,12 +205,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     }
   }
 
-  function _release(VestingSchedule memory vestingSchedule)
-    internal
-    onlyOwner
-    returns (uint256)
-  //        pastCliffTime(vestingSchedule.registeredAddress) // dont throw error
-  {
+  function _release(VestingSchedule memory vestingSchedule) internal onlyOwner returns (uint256) {
     // Don't throw error, this is run in a loop
     if (block.timestamp < vestingSchedule.cliffTime) {
       return vestingSchedule.totalWithdrawnAmount;
