@@ -2,7 +2,7 @@
 
 pragma solidity 0.6.12;
 
-import "hardhat/console.sol"; // TODO: Toggle
+// import "hardhat/console.sol"; // TODO: Toggle
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
@@ -25,7 +25,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
   // events
   event VestingScheduleRegistered(
     address registeredAddress,
-    uint256 startTime,
+    uint256 registerTime,
     uint256 endTime,
     uint256 cliffTime,
     uint256 totalAmount
@@ -33,7 +33,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
 
   event VestingScheduleUpdated(
     address registeredAddress,
-    uint256 startTime,
+    uint256 registerTime,
     uint256 endTime,
     uint256 cliffTime,
     uint256 totalAmount
@@ -44,7 +44,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
   struct VestingSchedule {
     address registeredAddress;
     //        string name;
-    uint256 startTime;
+    uint256 registerTime;
     uint256 cliffTime;
     uint256 terminalPeriodInMonth;
     uint256 totalAmount;
@@ -77,14 +77,6 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     VEGA_TOKEN = IERC20(_VEGA_TOKEN_ADDR);
     vestingTokenAddress = _VEGA_TOKEN_ADDR;
     DEFAULT_PERIOD = 30 days;
-
-    uint256 totalSupply = VEGA_TOKEN.totalSupply();
-    console.log("[sc] initialize, totalSupply: %s", totalSupply);
-
-    // TODO: Define buckets
-    // registerVestingSchedule(
-    //   _seed,
-    // );
   }
 
   // util function
@@ -119,11 +111,11 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       amountPerTerminalPeriod = _totalAmount.div(_terminalPeriodInMonth);
     }
     uint256 endTime = getEndTime(_cliffTime, amountPerTerminalPeriod, _totalAmount);
-    uint256 startTime = block.timestamp;
+    uint256 registerTime = block.timestamp;
 
     vestingSchedules[_registeredAddress] = VestingSchedule({
       registeredAddress: _registeredAddress,
-      startTime: startTime,
+      registerTime: registerTime,
       cliffTime: _cliffTime,
       endTime: endTime,
       terminalPeriodInMonth: _terminalPeriodInMonth,
@@ -137,7 +129,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     // keep track in array to loop later
     registeredAddresses.push(_registeredAddress);
 
-    VestingScheduleRegistered(_registeredAddress, startTime, _cliffTime, endTime, _totalAmount);
+    VestingScheduleRegistered(_registeredAddress, registerTime, _cliffTime, endTime, _totalAmount);
   }
 
   function updateVestingSchedule(
@@ -158,11 +150,11 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       amountPerTerminalPeriod = _totalAmount.div(_terminalPeriodInMonth);
     }
     uint256 endTime = getEndTime(_cliffTime, amountPerTerminalPeriod, _totalAmount);
-    uint256 startTime = block.timestamp; // DEV: question: cannot update startTime?
+    uint256 registerTime = block.timestamp; // DEV: question: cannot update registerTime?
 
     vestingSchedules[_updatedAddress] = VestingSchedule({
       registeredAddress: _updatedAddress,
-      startTime: vestingSchedule.startTime, // startTime stays the same
+      registerTime: vestingSchedule.registerTime, // registerTime stays the same
       cliffTime: _cliffTime,
       endTime: endTime,
       terminalPeriodInMonth: _terminalPeriodInMonth,
@@ -173,7 +165,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       isAdded: true
     });
 
-    VestingScheduleUpdated(_updatedAddress, startTime, _cliffTime, endTime, _totalAmount);
+    VestingScheduleUpdated(_updatedAddress, registerTime, _cliffTime, endTime, _totalAmount);
   }
 
   // All pre checking should be done at caller

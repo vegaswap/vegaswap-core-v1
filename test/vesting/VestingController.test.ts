@@ -69,8 +69,8 @@ describe("VestingController", function () {
       const { accounts } = await getContext();
       const [owner, addr1] = accounts;
 
-      const startTime = await latest(); // only use to validate test
-      const cliffTime = startTime.add(duration.days(1)); // start immediately
+      const registerTime = await latest(); // only use to validate test
+      const cliffTime = registerTime.add(duration.days(1)); // start immediately
       const terminalPeriodInMonth = 2;
       const totalAmount = 1000;
 
@@ -86,11 +86,11 @@ describe("VestingController", function () {
 
       expect(err.toString()).to.equal("Error: VM Exception while processing transaction: revert VESTING: ZERO_ADDRESS");
 
-      // invalid startTime, cliffTime should throw error
+      // invalid registerTime, cliffTime should throw error
       try {
         await this.vestingController.connect(owner).registerVestingSchedule(
           addr1.address,
-          startTime.sub(duration.days(1)), // cliffTime is before startTime
+          registerTime.sub(duration.days(1)), // cliffTime is before registerTime
           terminalPeriodInMonth,
           totalAmount
         );
@@ -107,8 +107,8 @@ describe("VestingController", function () {
       const { accounts } = await getContext();
       const [owner, addr1] = accounts;
 
-      const startTime = await latest();
-      const cliffTime = startTime.add(duration.days(1)); // start immediately
+      const registerTime = await latest();
+      const cliffTime = registerTime.add(duration.days(1)); // start immediately
       const terminalPeriodInMonth = 2;
       const totalAmount = 1000;
       const registeredAddress = addr1.address;
@@ -130,13 +130,9 @@ describe("VestingController", function () {
       // error case: duplicated address
       let err;
       try {
-        await this.vestingController.connect(owner).registerVestingSchedule(
-          registeredAddress,
-          // startTime,
-          cliffTime,
-          terminalPeriodInMonth,
-          totalAmount
-        );
+        await this.vestingController
+          .connect(owner)
+          .registerVestingSchedule(registeredAddress, cliffTime, terminalPeriodInMonth, totalAmount);
       } catch (e) {
         err = e;
       }
@@ -152,8 +148,8 @@ describe("VestingController", function () {
   //     const [owner, addr1, addr2] = accounts;
 
   //     // default period of VestingController contract is 30 days
-  //     const startTime = await latest();
-  //     const cliffTime = startTime.add(duration.days(2));
+  //     const registerTime = await latest();
+  //     const cliffTime = registerTime.add(duration.days(2));
   //     const terminalPeriodInMonth = 2;
   //     const totalAmount = 10;
 
@@ -170,8 +166,8 @@ describe("VestingController", function () {
   //     const { accounts } = await getContext();
   //     const [owner, addr1] = accounts;
 
-  //     const startTime = await latest(); // only use to validate test
-  //     const cliffTime = startTime.add(duration.days(1)); // start immediately
+  //     const registerTime = await latest(); // only use to validate test
+  //     const cliffTime = registerTime.add(duration.days(1)); // start immediately
   //     const terminalPeriodInMonth = 2;
   //     const totalAmount = 1000;
 
@@ -198,11 +194,11 @@ describe("VestingController", function () {
 
   //     expect(err.toString()).to.equal("Error: VM Exception while processing transaction: revert VESTING: ZERO_ADDRESS");
 
-  //     // invalid startTime, cliffTime should throw error
+  //     // invalid registerTime, cliffTime should throw error
   //     try {
   //       await this.vestingController.connect(owner).registerVestingSchedule(
   //         addr1.address,
-  //         startTime.sub(duration.days(1)), // cliffTime is before startTime
+  //         registerTime.sub(duration.days(1)), // cliffTime is before registerTime
   //         terminalPeriodInMonth,
   //         totalAmount
   //       );
@@ -219,8 +215,8 @@ describe("VestingController", function () {
   //     const { accounts } = await getContext();
   //     const [owner, addr1] = accounts;
 
-  //     const startTime = await latest();
-  //     const cliffTime = startTime.add(duration.days(1)); // start immediately
+  //     const registerTime = await latest();
+  //     const cliffTime = registerTime.add(duration.days(1)); // start immediately
   //     const terminalPeriodInMonth = 2;
   //     const totalAmount = 1000;
   //     const registeredAddress = addr1.address;
@@ -244,7 +240,7 @@ describe("VestingController", function () {
   //     try {
   //       await this.vestingController.connect(owner).registerVestingSchedule(
   //         registeredAddress,
-  //         // startTime,
+  //         // registerTime,
   //         cliffTime,
   //         terminalPeriodInMonth,
   //         totalAmount
@@ -258,7 +254,7 @@ describe("VestingController", function () {
   //   });
   // });
 
-  // startTime | cliffTime | ..................... | endTime
+  // registerTime | cliffTime | ..................... | endTime
   //           | release at this ......... n period .........
   describe("getVestedAmount()", async function () {
     it("should return totalAmount if endTime is reached", async function () {
@@ -266,8 +262,8 @@ describe("VestingController", function () {
       const [owner] = accounts;
 
       const period = 30; // in seconds
-      const startTime = await latest();
-      const cliffTime = startTime.add(duration.seconds(2)); // start immediately
+      const registerTime = await latest();
+      const cliffTime = registerTime.add(duration.seconds(2)); // start immediately
       // will be auto calculated before calling getVestedAmountTest, we use dummy one to test this case
       const endTime = cliffTime;
       const amountPerTerminalPeriod = 3;
@@ -292,8 +288,8 @@ describe("VestingController", function () {
       const [owner] = accounts;
 
       const period = 30; // in seconds
-      const startTime = await latest();
-      const cliffTime = startTime.add(duration.seconds(5));
+      const registerTime = await latest();
+      const cliffTime = registerTime.add(duration.seconds(5));
       const endTime = cliffTime.add(duration.seconds(period)); // will be auto calculated before calling getVestedAmountTest
 
       const res = await this.vestingController.connect(owner).getVestedAmountTest(
@@ -374,8 +370,8 @@ describe("VestingController", function () {
 
   describe("getEndTime", async function () {
     it("should returns correct endTime", async function () {
-      const startTime = await latest();
-      const cliffTime = startTime.add(duration.seconds(2));
+      const registerTime = await latest();
+      const cliffTime = registerTime.add(duration.seconds(2));
       const amountPerTerminalPeriod = 3;
       const totalAmount = 10;
 
@@ -394,15 +390,15 @@ describe("VestingController", function () {
     //   const [owner, addr1, addr2] = accounts;
     //
     //   // default period of VestingController contract is 30 days
-    //   const startTime = await latest();
-    //   const cliffTime = startTime.add(duration.days(2));
+    //   const registerTime = await latest();
+    //   const cliffTime = registerTime.add(duration.days(2));
     //   const terminalPeriodInMonth = 2;
     //   const totalAmount = 10;
     //
     //   // execute and check for emitted events at the same time
     //   await this.vestingController.connect(owner).registerVestingSchedule(
     //     addr1.address, // registeredAddress
-    //     // startTime,
+    //     // registerTime,
     //     cliffTime,
     //     terminalPeriodInMonth,
     //     totalAmount
@@ -463,8 +459,8 @@ describe("VestingController", function () {
       const [owner, addr1, addr2] = accounts;
 
       // default period of VestingController contract is 30 days
-      const startTime = await latest();
-      const cliffTime = startTime.add(duration.days(2));
+      const registerTime = await latest();
+      const cliffTime = registerTime.add(duration.days(2));
       const terminalPeriodInMonth = 2;
       const totalAmount = 10;
 
@@ -474,7 +470,6 @@ describe("VestingController", function () {
       // execute and check for emitted events at the same time
       await this.vestingController.connect(owner).registerVestingSchedule(
         addr1.address, // registeredAddress
-        // startTime,
         cliffTime,
         terminalPeriodInMonth,
         totalAmount
@@ -495,8 +490,8 @@ describe("VestingController", function () {
       const [owner, addr1, addr2] = accounts;
 
       // default period of VestingController contract is 30 days
-      const startTime = await latest();
-      const cliffTime = startTime.add(duration.days(2));
+      const registerTime = await latest();
+      const cliffTime = registerTime.add(duration.days(2));
       const terminalPeriodInMonth = 2;
       const totalAmount = 10;
 
@@ -506,7 +501,6 @@ describe("VestingController", function () {
       // execute and check for emitted events at the same time
       await this.vestingController.connect(owner).registerVestingSchedule(
         addr1.address, // registeredAddress
-        // startTime,
         cliffTime,
         terminalPeriodInMonth,
         totalAmount
