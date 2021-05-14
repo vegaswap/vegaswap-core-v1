@@ -664,31 +664,18 @@ describe("VestingController", function () {
         await increaseBlockTime(t.DEFAULT_PERIOD.toNumber()); // after 1 month
         await t.vestingController.connect(owner).release();
         const seed_ = await t.erc20GovToken.balanceOf(seed.address);
-        console.log(`DEBUG: seed round after ${x} month: ${seed_.toNumber()}`);
         const priv = await t.erc20GovToken.balanceOf(privateRound.address);
-        console.log(`DEBUG: private round after ${x} month: ${priv.toNumber()}`);
         const publ = await t.erc20GovToken.balanceOf(publicRound.address);
-        console.log(`DEBUG: public round after ${x} month: ${publ.toNumber()}`);
         const traderProgram_ = await t.erc20GovToken.balanceOf(traderProgram.address);
-        console.log(`DEBUG: traderProgram after ${x} month: ${traderProgram_.toNumber()}`);
         const vegaLiq_ = await t.erc20GovToken.balanceOf(vegaLiq.address);
-        console.log(`DEBUG: vegaLiq after ${x} month: ${vegaLiq_.toNumber()}`);
         const marketing_ = await t.erc20GovToken.balanceOf(marketing.address);
-        console.log(`DEBUG: marketing after ${x} month: ${marketing_.toNumber()}`);
         const dev_ = await t.erc20GovToken.balanceOf(dev.address);
-        console.log(`DEBUG: dev after ${x} month: ${dev_.toNumber()}`);
         const ecosystem_ = await t.erc20GovToken.balanceOf(ecosystem.address);
-        console.log(`DEBUG: ecosystem after ${x} month: ${ecosystem_.toNumber()}`);
         const lpGrants_ = await t.erc20GovToken.balanceOf(lpGrants.address);
-        console.log(`DEBUG: lpGrants after ${x} month: ${lpGrants_.toNumber()}`);
         const lpRewards_ = await t.erc20GovToken.balanceOf(lpRewards.address);
-        console.log(`DEBUG: lpRewards after ${x} month: ${lpRewards_.toNumber()}`);
         const team_ = await t.erc20GovToken.balanceOf(team.address);
-        console.log(`DEBUG: team after ${x} month: ${team_.toNumber()}`);
         const advisors_ = await t.erc20GovToken.balanceOf(advisors.address);
-        console.log(`DEBUG: advisors after ${x} month: ${advisors_.toNumber()}`);
         const treasury_ = await t.erc20GovToken.balanceOf(treasury.address);
-        console.log(`DEBUG: treasury after ${x} month: ${treasury_.toNumber()}`);
 
         const totalVested = seed_
           .add(priv)
@@ -729,6 +716,8 @@ describe("VestingController", function () {
       for (let i = 0; i <= 24; i++) {
         results.push(await afterXMonth(this, i));
       }
+      const expectedResults = require("./results1.json");
+      expect(results).to.eql(expectedResults);
 
       await writeToCsv(results);
       console.table(results);

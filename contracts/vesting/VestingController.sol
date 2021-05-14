@@ -53,7 +53,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     uint256 endTime;
     uint256 amountPerTerminalPeriod;
     uint256 totalWithdrawnAmount;
-    bool isConfirmed;
+    // bool isConfirmed;
   }
 
   modifier pastCliffTime(address addr) {
@@ -121,8 +121,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       terminalPeriodInMonth: _terminalPeriodInMonth,
       amountPerTerminalPeriod: amountPerTerminalPeriod,
       totalAmount: _totalAmount,
-      totalWithdrawnAmount: 0,
-      isConfirmed: false,
+      totalWithdrawnAmount: 0, // isConfirmed: false,
       isAdded: true
     });
 
@@ -141,16 +140,13 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     VestingSchedule storage vestingSchedule = vestingSchedules[_updatedAddress];
     require(vestingSchedule.isAdded == true, "VESTING: INVALID_VESTING_SCHEDULE_ADDRESS");
 
-    // Refactor
     uint256 amountPerTerminalPeriod;
     if (_terminalPeriodInMonth == 0) {
-      // no locking case
-      amountPerTerminalPeriod = _totalAmount;
+      amountPerTerminalPeriod = _totalAmount; // no locking case
     } else {
       amountPerTerminalPeriod = _totalAmount.div(_terminalPeriodInMonth);
     }
     uint256 endTime = getEndTime(_cliffTime, amountPerTerminalPeriod, _totalAmount);
-    uint256 registerTime = block.timestamp; // DEV: question: cannot update registerTime?
 
     vestingSchedules[_updatedAddress] = VestingSchedule({
       registeredAddress: _updatedAddress,
@@ -160,12 +156,11 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       terminalPeriodInMonth: _terminalPeriodInMonth,
       amountPerTerminalPeriod: amountPerTerminalPeriod,
       totalAmount: _totalAmount,
-      totalWithdrawnAmount: 0,
-      isConfirmed: false,
+      totalWithdrawnAmount: 0, // isConfirmed: false,
       isAdded: true
     });
 
-    VestingScheduleUpdated(_updatedAddress, registerTime, _cliffTime, endTime, _totalAmount);
+    VestingScheduleUpdated(_updatedAddress, vestingSchedule.registerTime, _cliffTime, endTime, _totalAmount);
   }
 
   // All pre checking should be done at caller
