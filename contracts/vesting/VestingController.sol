@@ -7,12 +7,15 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
+/// control of vested tokens
 contract VestingController is OwnableUpgradeable, PausableUpgradeable {
+
   using SafeMath for uint256;
   using SafeERC20 for IERC20;
 
   // data
   mapping(address => VestingSchedule) public vestingSchedules;
+  // all registered addresses
   address[] public registeredAddresses;
 
   /// @dev Address of VEGA_TOKEN contract.
@@ -21,6 +24,24 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
 
   // TODO: Treasury address
   uint256 private DEFAULT_PERIOD;
+
+  // all tokens released
+  uint256 public totalReleased;
+
+  struct VestingSchedule {
+    address registeredAddress; // the address of the beneficiary
+    //        string name;
+    uint256 registerTime;
+    uint256 cliffTime;
+    uint256 terminalPeriodInMonth;
+    uint256 totalAmount;
+    bool isAdded; // trick to check if one is added
+    // calculated
+    uint256 endTime;
+    uint256 amountPerTerminalPeriod;
+    uint256 totalWithdrawnAmount;
+    // bool isConfirmed;
+  }
 
   // events
   event VestingScheduleRegistered(
@@ -40,21 +61,6 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
   );
 
   event Withdrawal(address indexed addr, uint256 amount);
-
-  struct VestingSchedule {
-    address registeredAddress;
-    //        string name;
-    uint256 registerTime;
-    uint256 cliffTime;
-    uint256 terminalPeriodInMonth;
-    uint256 totalAmount;
-    bool isAdded; // trick to check if one is added
-    // calculated
-    uint256 endTime;
-    uint256 amountPerTerminalPeriod;
-    uint256 totalWithdrawnAmount;
-    // bool isConfirmed;
-  }
 
   modifier pastCliffTime(address addr) {
     VestingSchedule storage vestingSchedule = vestingSchedules[addr];
@@ -198,6 +204,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       vestingSchedule = vestingSchedules[registeredAddresses[i]];
       newTotalWithdrawn = _release(vestingSchedule);
       vestingSchedule.totalWithdrawnAmount = newTotalWithdrawn;
+      totalReleased = totalReleased + newTotalWithdrawn;
     }
   }
 
