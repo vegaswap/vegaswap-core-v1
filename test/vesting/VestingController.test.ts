@@ -548,100 +548,289 @@ describe("VestingController", function () {
 
       this.DEFAULT_PERIOD = duration.days(30);
 
+      let seedp = 1.25;
+      let privatep = 4.5;
+      let publicp = 1.67;
+      let traderProgramp = 1.5;
+      let liqp = 15;
+      let marketingp = 8;
+      let devp = 8;
+      let ecosystemp = 10;
+      let lpgrantsp = 8;
+      let lpRewardsp = 20;
+      let teamp = 15;
+      let advisorsp = 5;
+      let treasuryp = 2.08;
+
+      let seedt = 10;
+      let privateRoundt = 6;
+      let publict = 0;
+      let traderProgramt = 4;
+      let liqt = 0;
+      let marketingt = 20;
+      let devt = 20;
+      let ecosystemt = 20;
+      let lpgrantst = 4;
+      let lpRewardst = 4;
+      let teamt = 12; //??  24;
+      let advisorst = 24;
+      let treasuryt = 0;
+
+      let seedc = 1;
+      let privateRounc = 0;
+      let publicc = 0;
+      let traderProgramc = 0;
+      let liqc = 0;
+      let marketingc = 3;
+      let devc = 3;
+      let ecosystemc = 3;
+      let lpgrantsc = 1;
+      let lpRewardsc = 1;
+      let teamc = 12;
+      let advisorsc = 1;
+      let treasuryc = 0;
+
+
+      //_cliffTime,_terminalPeriodInMonth,_totalAmount
+
       // execute and check for emitted events at the same time
       await this.vestingController.connect(owner).registerVestingSchedule(
         seed.address,
-        (await latest()).add(this.DEFAULT_PERIOD), // after 1 month
-        10,
-        (1.25 / 100) * this.totalSupply
+        (await latest()).add(seedc * this.DEFAULT_PERIOD), // after 1 month
+        seedt,
+        (seedp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         privateRound.address,
         (await latest()).add(duration.seconds(10)), // at listing
-        6,
-        (4.5 / 100) * this.totalSupply
+        privateRoundt,
+        (privatep / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         publicRound.address,
         (await latest()).add(duration.seconds(10)), // at listing
-        0,
-        (1.67 / 100) * this.totalSupply
+        publict,
+        (publicp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         traderProgram.address,
         (await latest()).add(duration.seconds(10)), // at listing
-        4,
-        (1.5 / 100) * this.totalSupply
+        traderProgramt,
+        (traderProgramp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         vegaLiq.address,
         (await latest()).add(duration.seconds(10)), // at listing
-        0,
-        (15 / 100) * this.totalSupply
+        liqt,
+        (liqp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         marketing.address,
-        (await latest()).add(3 * this.DEFAULT_PERIOD), // 3 months
-        20,
-        (8 / 100) * this.totalSupply
+        (await latest()).add(marketingc * this.DEFAULT_PERIOD), // 3 months
+        marketingt,
+        (marketingp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         dev.address,
-        (await latest()).add(3 * this.DEFAULT_PERIOD), // 3 months
-        20,
-        (8 / 100) * this.totalSupply
+        (await latest()).add(devc * this.DEFAULT_PERIOD), // 3 months
+        devt,
+        (devp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         ecosystem.address,
-        (await latest()).add(3 * this.DEFAULT_PERIOD), // 3 months
-        20,
-        (10 / 100) * this.totalSupply
+        (await latest()).add(ecosystemc * this.DEFAULT_PERIOD), // 3 months
+        ecosystemt,
+        (ecosystemp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         lpGrants.address,
-        (await latest()).add(1 * this.DEFAULT_PERIOD), // 1 month
-        4,
-        (8 / 100) * this.totalSupply
+        (await latest()).add(lpgrantsc * this.DEFAULT_PERIOD), // 3 months
+        lpgrantst,
+        (lpgrantsp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         lpRewards.address,
-        (await latest()).add(1 * this.DEFAULT_PERIOD), // 1 month
-        4,
-        (20 / 100) * this.totalSupply
+        (await latest()).add(lpRewardsc * this.DEFAULT_PERIOD), // 3 months
+        lpRewardst,
+        (lpRewardsp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         team.address,
-        (await latest()).add(12 * this.DEFAULT_PERIOD), // 12 months
-        12,
-        (15 / 100) * this.totalSupply
+        (await latest()).add(teamc * this.DEFAULT_PERIOD), // 3 months
+        teamt,
+        (teamp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         advisors.address,
-        (await latest()).add(1 * this.DEFAULT_PERIOD), // 1 month
-        24,
-        (5 / 100) * this.totalSupply
+        (await latest()).add(advisorsc * this.DEFAULT_PERIOD), // 3 months
+        advisorst,
+        (advisorsp / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         treasury.address,
-        (await latest()).add(duration.seconds(10)), // at listing
-        0,
-        (2.08 / 100) * this.totalSupply
+        (await latest()).add(duration.seconds(10)), // 3 months
+        treasuryt,
+        (treasuryp / 100) * this.totalSupply
       );
     });
 
     it("should release successfully after 1 month", async function () {
+      const { accounts } = await getContext();
+      const [
+        owner,
+        seed,
+        privateRound,
+        publicRound,
+        traderProgram,
+        vegaLiq,
+        marketing,
+        dev,
+        ecosystem,
+        lpGrants,
+        lpRewards,
+        team,
+        advisors,
+        treasury,
+      ] = accounts;
+
+      const afterXMonth = async function (t, x: Number) {
+        await increaseBlockTime(t.DEFAULT_PERIOD.toNumber()); // after 1 month
+        await t.vestingController.connect(owner).release();
+        const seed_ = await t.erc20GovToken.balanceOf(seed.address);
+        const priv = await t.erc20GovToken.balanceOf(privateRound.address);
+        const publ = await t.erc20GovToken.balanceOf(publicRound.address);
+        const traderProgram_ = await t.erc20GovToken.balanceOf(traderProgram.address);
+        const vegaLiq_ = await t.erc20GovToken.balanceOf(vegaLiq.address);
+        const marketing_ = await t.erc20GovToken.balanceOf(marketing.address);
+        const dev_ = await t.erc20GovToken.balanceOf(dev.address);
+        const ecosystem_ = await t.erc20GovToken.balanceOf(ecosystem.address);
+        const lpGrants_ = await t.erc20GovToken.balanceOf(lpGrants.address);
+        const lpRewards_ = await t.erc20GovToken.balanceOf(lpRewards.address);
+        const team_ = await t.erc20GovToken.balanceOf(team.address);
+        const advisors_ = await t.erc20GovToken.balanceOf(advisors.address);
+        const treasury_ = await t.erc20GovToken.balanceOf(treasury.address);
+
+        const totalVested = seed_
+          .add(priv)
+          .add(publ)
+          .add(traderProgram_)
+          .add(vegaLiq_)
+          .add(marketing_)
+          .add(dev_)
+          .add(ecosystem_)
+          .add(lpGrants_)
+          .add(lpRewards_)
+          .add(team_)
+          .add(advisors_)
+          .add(treasury_);
+        const pecentageVested = `${(totalVested.toNumber() / 10 ** 9) * 100} %`;
+
+        return {
+          monthsAfter: x,
+          seed: seed_.toNumber(),
+          privateRound: priv.toNumber(),
+          publicRound: publ.toNumber(),
+          traderProgram: traderProgram_.toNumber(),
+          vegaLiq: vegaLiq_.toNumber(),
+          marketing: marketing_.toNumber(),
+          dev: dev_.toNumber(),
+          ecosystem: ecosystem_.toNumber(),
+          lpGrants: lpGrants_.toNumber(),
+          lpRewards: lpRewards_.toNumber(),
+          team: team_.toNumber(),
+          advisors: advisors_.toNumber(),
+          treasury: treasury_.toNumber(),
+          totalVested: totalVested.toNumber(),
+          pecentageVested,
+        };
+      };
+
+      const results = [];
+      for (let i = 0; i <= 24; i++) {
+        results.push(await afterXMonth(this, i));
+      }
+      const expectedResults = require("./results1.json");
+      expect(results).to.eql(expectedResults);
+
+      await writeToCsv(results);
+      console.table(results);
+    });
+  });
+
+  describe("VEGA release schedule bucket", async function () {
+    beforeEach(async function () {
+      const { accounts } = await getContext();
+      const [
+        owner,
+        seed,
+        privateRound,
+        publicRound,
+        traderProgram,
+        vegaLiq,
+        marketing,
+        dev,
+        ecosystem,
+        lpGrants,
+        lpRewards,
+        team,
+        advisors,
+        treasury,
+      ] = accounts;
+
+      this.totalSupply = 10 ** 9;
+
+      this.DEFAULT_PERIOD = duration.days(30);
+
+      let vestingSchedulesTable = [
+        ['Seed', seed.address, 1, 10, 1.25],
+        ['privateRound', privateRound.address, 0, 6, 4.5],
+        ['publicRound', publicRound.address, 0, 0, 1.67],
+        ['traderProgram', traderProgram.address, 0, 4, 1.5],
+        ['vegaLiq', vegaLiq.address, 0, 0, 15],
+        ['marketing', marketing.address, 3, 20, 8],
+        ['dev', dev.address, 3, 20, 8],
+        ['ecosystem', ecosystem.address, 3, 20, 10],
+        ['lpGrants', lpGrants.address, 1, 4, 8],
+        ['lpRewards', lpRewards.address, 1, 4, 20],
+        ['team', team.address, 12, 12, 15],
+        ['advisors', advisors.address, 1, 24, 5],
+        ['treasury', treasury.address, 0, 0, 2.08]
+      ];
+
+      //(await latest()).add(duration.seconds(10)), // at listing
+
+      await vestingSchedulesTable.reduce(async (promise, vestingS) => {
+        await promise;
+        console.log(vestingS);
+        const result = await this.vestingController.connect(owner).registerVestingSchedule(
+          vestingS[1],
+          vestingS[2] == 0 ? 
+          (await latest()).add(duration.seconds(10)) : 
+          (await latest()).add(vestingS[2] * this.DEFAULT_PERIOD)
+          , // 3 months
+          vestingS[3],
+          (vestingS[4] / 100) * this.totalSupply
+        );
+      }, Promise.resolve());
+
+      
+      //_cliffTime,_terminalPeriodInMonth,_totalAmount
+
+    });
+
+    it("should release successfully based on vesting table", async function () {
       const { accounts } = await getContext();
       const [
         owner,
