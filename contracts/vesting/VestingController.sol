@@ -79,6 +79,13 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     DEFAULT_PERIOD = 30 days;
   }
 
+  //https://github.com/curvefi/curve-dao-contracts/blob/master/contracts/VestingEscrow.vy#L86
+  function addTokens(uint256 _amount){
+    assert IERC20(VEGA_TOKEN).transferFrom(msg.sender, self, _amount);
+    unallocated_supply += _amount
+  }
+  
+
   // util function
   function ceil(uint256 a, uint256 m) private pure returns (uint256) {
     uint256 t = a % m;
