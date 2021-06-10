@@ -9,8 +9,8 @@ import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract VestingController is OwnableUpgradeable, PausableUpgradeable {
-  using SafeMath for uint256;
-  using ERC20 for IERC20;
+  //using SafeMath for uint256;
+  //using ERC20 for IERC20;
 
   // data
   mapping(address => VestingSchedule) public vestingSchedules;
@@ -84,9 +84,9 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
   function ceil(uint256 a, uint256 m) private pure returns (uint256) {
     uint256 t = a % m;
     if (t == 0) {
-      return a.div(m);
+      return a/m;
     }
-    return (a.add(m.sub(t))).div(m);
+    return (a + (m - t))/m;
   }
 
   function getEndTime(
@@ -94,7 +94,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     uint256 _amountPerTerminalPeriod,
     uint256 _totalAmount
   ) internal view returns (uint256) {
-    return _cliffTime.add(DEFAULT_PERIOD.mul(ceil(_totalAmount, _amountPerTerminalPeriod)));
+    return _cliffTime + (DEFAULT_PERIOD * (ceil(_totalAmount, _amountPerTerminalPeriod)));
   }
 
   function registerVestingSchedule(
@@ -109,7 +109,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       // no locking case
       amountPerTerminalPeriod = _totalAmount;
     } else {
-      amountPerTerminalPeriod = _totalAmount.div(_terminalPeriodInMonth);
+      amountPerTerminalPeriod = _totalAmount/_terminalPeriodInMonth;
     }
     uint256 endTime = getEndTime(_cliffTime, amountPerTerminalPeriod, _totalAmount);
     uint256 registerTime = block.timestamp;
@@ -129,7 +129,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     // keep track in array to loop later
     registeredAddresses.push(_registeredAddress);
 
-    VestingScheduleRegistered(_registeredAddress, registerTime, _cliffTime, endTime, _totalAmount);
+    emit VestingScheduleRegistered(_registeredAddress, registerTime, _cliffTime, endTime, _totalAmount);
   }
 
   function updateVestingSchedule(
@@ -145,7 +145,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     if (_terminalPeriodInMonth == 0) {
       amountPerTerminalPeriod = _totalAmount; // no locking case
     } else {
-      amountPerTerminalPeriod = _totalAmount.div(_terminalPeriodInMonth);
+      amountPerTerminalPeriod = _totalAmount/_terminalPeriodInMonth;
     }
     uint256 endTime = getEndTime(_cliffTime, amountPerTerminalPeriod, _totalAmount);
 
@@ -161,7 +161,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
       isAdded: true
     });
 
-    VestingScheduleUpdated(_updatedAddress, vestingSchedule.registerTime, _cliffTime, endTime, _totalAmount);
+    emit VestingScheduleUpdated(_updatedAddress, vestingSchedule.registerTime, _cliffTime, endTime, _totalAmount);
   }
 
   // All pre checking should be done at caller
@@ -177,8 +177,8 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
     // returns 0 if cliffTime is not reached
     if (block.timestamp < _cliffTime) return 0;
 
-    uint256 timeSinceCliff = block.timestamp.sub(_cliffTime);
-    uint256 validPeriodCount = timeSinceCliff.div(_period) + 1; // at cliff, one amount is withdrawable
+    uint256 timeSinceCliff = block.timestamp - _cliffTime;
+    uint256 validPeriodCount = timeSinceCliff/_period + 1; // at cliff, one amount is withdrawable
     uint256 potentialReturned = validPeriodCount * _amountPerTerminalPeriod;
 
     if (potentialReturned > _totalAmount) {
@@ -220,7 +220,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
         vestingSchedule.amountPerTerminalPeriod,
         vestingSchedule.totalAmount
       );
-    uint256 withdrawableAmount = vestableAmount.sub(vestingSchedule.totalWithdrawnAmount);
+    uint256 withdrawableAmount = vestableAmount - vestingSchedule.totalWithdrawnAmount;
 
     if (vestingSchedule.totalWithdrawnAmount + withdrawableAmount > vestingSchedule.totalAmount) {
       withdrawableAmount = vestingSchedule.totalAmount - vestingSchedule.totalWithdrawnAmount;
@@ -235,7 +235,7 @@ contract VestingController is OwnableUpgradeable, PausableUpgradeable {
 
     // transfer token
     require(VEGA_TOKEN.transfer(vestingSchedule.registeredAddress, withdrawableAmount));
-    Withdrawal(_msgSender(), withdrawableAmount);
+    emit Withdrawal(_msgSender(), withdrawableAmount);
     return vestingSchedule.totalWithdrawnAmount;
   }
 

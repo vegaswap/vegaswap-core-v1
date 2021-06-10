@@ -8,11 +8,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 // ERC20GovToken with Governance.
 // TODO: Replace VegaToken
-contract VegaToken is ERC20, ERC20Capped, Ownable {
-  uint256 public TOTAL_SUPPLY = 10**9 * (10**18);
+contract VegaToken is ERC20, Ownable {
+  uint256 public MAX_TOTAL_SUPPLY = 10**9 * (10**18);
 
-  constructor() public ERC20("VEGA", "VEGA") ERC20Capped(10**9 * (10**18)) {
-    _mint(msg.sender, TOTAL_SUPPLY);
+  constructor() public ERC20("VEGA", "VEGA") {    
+    _mint(msg.sender, MAX_TOTAL_SUPPLY);
   }
 
   /**
@@ -22,12 +22,14 @@ contract VegaToken is ERC20, ERC20Capped, Ownable {
     address from,
     address to,
     uint256 amount
-  ) internal override(ERC20, ERC20Capped) {
+  ) //internal override(ERC20, ERC20Capped) {
+    internal override(ERC20) {
     super._beforeTokenTransfer(from, to, amount);
   }
 
   /// @dev Creates `_amount` token to `_to`. Must only be called by the owner.
   function mint(address _to, uint256 _amount) public onlyOwner {
+    require(ERC20.totalSupply() + _amount <= MAX_TOTAL_SUPPLY, "ERC20Capped: cap exceeded");
     _mint(_to, _amount);
     _moveDelegates(address(0), _delegates[_to], _amount);
   }
@@ -112,7 +114,7 @@ contract VegaToken is ERC20, ERC20Capped, Ownable {
     address signatory = ecrecover(digest, v, r, s);
     require(signatory != address(0), "SUSHI::delegateBySig: invalid signature");
     require(nonce == nonces[signatory]++, "SUSHI::delegateBySig: invalid nonce");
-    require(now <= expiry, "SUSHI::delegateBySig: signature expired");
+    require(block.timestamp <= expiry, "SUSHI::delegateBySig: signature expired");
     return _delegate(signatory, delegatee);
   }
 
@@ -187,7 +189,7 @@ contract VegaToken is ERC20, ERC20Capped, Ownable {
         // decrease old representative
         uint32 srcRepNum = numCheckpoints[srcRep];
         uint256 srcRepOld = srcRepNum > 0 ? checkpoints[srcRep][srcRepNum - 1].votes : 0;
-        uint256 srcRepNew = srcRepOld.sub(amount);
+        uint256 srcRepNew = srcRepOld - amount;
         _writeCheckpoint(srcRep, srcRepNum, srcRepOld, srcRepNew);
       }
 
@@ -195,7 +197,7 @@ contract VegaToken is ERC20, ERC20Capped, Ownable {
         // increase new representative
         uint32 dstRepNum = numCheckpoints[dstRep];
         uint256 dstRepOld = dstRepNum > 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
-        uint256 dstRepNew = dstRepOld.add(amount);
+        uint256 dstRepNew = dstRepOld + amount;
         _writeCheckpoint(dstRep, dstRepNum, dstRepOld, dstRepNew);
       }
     }
@@ -224,7 +226,7 @@ contract VegaToken is ERC20, ERC20Capped, Ownable {
     return uint32(n);
   }
 
-  function getChainId() internal pure returns (uint256) {
+  function getChainId() internal view returns (uint256) {
     uint256 chainId;
     assembly {
       chainId := chainid()
