@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.12;
+pragma solidity ^0.8.4;
 
 // import "hardhat/console.sol"; // TODO: Toggle
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+//import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract VestingController is OwnableUpgradeable, PausableUpgradeable {
   using SafeMath for uint256;
-  using SafeERC20 for IERC20;
+  using ERC20 for IERC20;
 
   // data
   mapping(address => VestingSchedule) public vestingSchedules;
