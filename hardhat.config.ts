@@ -14,6 +14,7 @@ import "hardhat-watcher"
 import "solidity-coverage"
 import '@openzeppelin/hardhat-upgrades';
 
+const { privkey } = require('./secrets.json');
 
 import { normalizeHardhatNetworkAccountsConfig } from "hardhat/internal/core/providers/util";
 import { BN, bufferToHex, privateToAddress, toBuffer } from "ethereumjs-util";
@@ -141,6 +142,13 @@ module.exports = {
     //   gasPrice: 120 * 1000000000,
     //   chainId: 1,
     // },
+    mainnet: {
+      url: "https://bsc-dataseed.binance.org/",
+      chainId: 56,
+      gas: 2100000,
+      gasPrice: 20000000000,
+      accounts: [privkey],
+    },
     ropsten: {
       url: `https://eth-ropsten.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
       accounts: [TEST_PRIVATE_KEY],
