@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-// ERC20GovToken with Governance.
 // TODO: Replace VegaToken
 contract VegaToken is ERC20, Ownable {
 
@@ -17,11 +16,7 @@ contract VegaToken is ERC20, Ownable {
     /**
      * @dev Constructor that gives msg.sender all of existing tokens.
      */
-    constructor(
-        //string memory name,
-        //string memory symbol,
-        
-    ) ERC20("Vega Token", "VEGA") {
+    constructor() ERC20("Vega Token", "VEGA") {
         _mint(msg.sender, MAX_TOTAL_SUPPLY);
     }
 }
