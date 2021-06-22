@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 // ERC20GovToken with Governance.
 // TODO: Replace VegaToken
-contract VegaToken is ERC20, Ownable {
+contract VegaToken is ERC20, ERC20Capped, Ownable {
   uint256 public MAX_TOTAL_SUPPLY = 10**9 * (10**18);
 
   constructor() public ERC20("VEGA", "VEGA") {    
