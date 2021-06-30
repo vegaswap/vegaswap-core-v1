@@ -2,13 +2,14 @@
 
 pragma solidity 0.6.12;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Capped.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Pausable.sol";
 
 // ERC20GovToken with Governance.
 // TODO: Replace VegaToken
-contract VegaToken is ERC20, ERC20Capped, Ownable {
+contract VegaToken is ERC20, ERC20Pausable, ERC20Capped, Ownable {
   uint256 public TOTAL_SUPPLY = 10**9 * (10**18);
 
   constructor() public ERC20("VEGA", "VEGA") ERC20Capped(10**9 * (10**18)) {
@@ -22,7 +23,7 @@ contract VegaToken is ERC20, ERC20Capped, Ownable {
     address from,
     address to,
     uint256 amount
-  ) internal override(ERC20, ERC20Capped) {
+  ) internal override(ERC20, ERC20Capped, ERC20Pausable) {
     super._beforeTokenTransfer(from, to, amount);
   }
 
