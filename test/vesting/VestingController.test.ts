@@ -607,35 +607,35 @@ describe("VestingController", function () {
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         lpGrants.address,
-        (await latest()).add(1 * this.DEFAULT_PERIOD), // 3 months
+        (await latest()).add(1 * this.DEFAULT_PERIOD), // 1 month
         4,
         (8 / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         lpRewards.address,
-        (await latest()).add(1 * this.DEFAULT_PERIOD), // 3 months
+        (await latest()).add(1 * this.DEFAULT_PERIOD), // 1 month
         4,
         (20 / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         team.address,
-        (await latest()).add(12 * this.DEFAULT_PERIOD), // 3 months
+        (await latest()).add(12 * this.DEFAULT_PERIOD), // 12 months
         12,
         (15 / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         advisors.address,
-        (await latest()).add(1 * this.DEFAULT_PERIOD), // 3 months
+        (await latest()).add(1 * this.DEFAULT_PERIOD), // 1 month
         24,
         (5 / 100) * this.totalSupply
       );
 
       await this.vestingController.connect(owner).registerVestingSchedule(
         treasury.address,
-        (await latest()).add(duration.seconds(10)), // 3 months
+        (await latest()).add(duration.seconds(10)), // at listing
         0,
         (2.08 / 100) * this.totalSupply
       );
