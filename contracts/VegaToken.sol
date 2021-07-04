@@ -24,6 +24,13 @@ initializble?
  */
 contract ERC20 is IERC20 {
 
+    uint8 constant public DECIMALS = 18;
+
+    uint256 constant public MAX_SUPPLY = 10**9 * (10**DECIMALS);
+
+    string constant private _name = "VEGA Token";
+    string constant private _symbol = "VEGA";
+
     address private _owner;
 
     mapping(address => uint256) private _balances;
@@ -32,15 +39,10 @@ contract ERC20 is IERC20 {
     
     uint256 private _totalSupply;
 
+    //event TransferVested(address indexed from, address indexed to, uint256 value);
+
     //uint256 private _circSupply;
-
-    uint8 public DECIMALS = 18;
-
-    uint256 public MAX_SUPPLY = 10**9 * (10**DECIMALS);
-
-    string constant private _name = "VEGA Token";
-    string constant private _symbol = "VEGA";
-
+    
     /**
      * @dev Sets the values for {name} and {symbol}.
      *
@@ -51,7 +53,7 @@ contract ERC20 is IERC20 {
      * construction.
      */
     constructor() {
-
+        _owner = _msgSender();
         //genensis_mint(_msgSender());
         genensis_mint(_msgSender());
     }
@@ -102,6 +104,16 @@ contract ERC20 is IERC20 {
      */
     function balanceOf(address account) public view virtual override returns (uint256) {
         return _balances[account];
+    }
+
+    //transfer to recipient, which will be vested, supply will go out of circulation
+    function transferToVested(address recipient, uint256 amount) public virtual returns (bool) {
+        //_transfer(_msgSender(), recipient, amount);
+    }
+
+    //transfer to recipient from vesting
+    function transferFromVested(address recipient, uint256 amount) public virtual returns (bool) {
+        //_transfer(_msgSender(), recipient, amount);
     }
 
     /**
