@@ -2,9 +2,11 @@
 
 pragma solidity 0.6.12;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20Capped.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+// import "@openzeppelin/contracts/token/ERC20/ERC20Capped.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
+
+import "./ERC20.sol";
 
 // ERC20GovToken with Governance.
 // TODO: Replace VegaToken
