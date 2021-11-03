@@ -32,22 +32,22 @@ export async function advanceTime(time) {
 }
 
 export const duration = {
-  seconds: function (val) {
+  seconds: function(val) {
     return BigNumber.from(val);
   },
-  minutes: function (val) {
+  minutes: function(val) {
     return BigNumber.from(val).mul(this.seconds("60"));
   },
-  hours: function (val) {
+  hours: function(val) {
     return BigNumber.from(val).mul(this.minutes("60"));
   },
-  days: function (val) {
+  days: function(val) {
     return BigNumber.from(val).mul(this.hours("24"));
   },
-  weeks: function (val) {
+  weeks: function(val) {
     return BigNumber.from(val).mul(this.days("7"));
   },
-  years: function (val) {
+  years: function(val) {
     return BigNumber.from(val).mul(this.days("365"));
   },
 };
@@ -92,5 +92,3 @@ export const increaseBlockTime = async (x: Number) => {
   await network.provider.send("evm_increaseTime", [x]);
   await network.provider.send("evm_mine");
 };
-
-

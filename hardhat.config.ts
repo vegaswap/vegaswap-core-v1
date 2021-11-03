@@ -1,23 +1,22 @@
 // hardhat.config.js
 // import "@nomiclabs/hardhat-solpp"
-import "@nomiclabs/hardhat-etherscan"
-import "@nomiclabs/hardhat-solhint"
-import "@nomiclabs/hardhat-waffle"
-import "@tenderly/hardhat-tenderly"
-import "dotenv/config"
-import "hardhat-abi-exporter"
-import "hardhat-deploy"
-import "hardhat-deploy-ethers"
-import "hardhat-gas-reporter"
-import "hardhat-spdx-license-identifier"
-import "hardhat-watcher"
-import "solidity-coverage"
-import '@openzeppelin/hardhat-upgrades';
+import "@nomiclabs/hardhat-etherscan";
+import "@nomiclabs/hardhat-solhint";
+import "@nomiclabs/hardhat-waffle";
+import "@openzeppelin/hardhat-upgrades";
+import "@tenderly/hardhat-tenderly";
+import "dotenv/config";
+import "hardhat-abi-exporter";
+import "hardhat-deploy";
+import "hardhat-deploy-ethers";
+import "hardhat-gas-reporter";
+import "hardhat-spdx-license-identifier";
+import "hardhat-watcher";
+import "solidity-coverage";
 
-
-import { normalizeHardhatNetworkAccountsConfig } from "hardhat/internal/core/providers/util";
 import { BN, bufferToHex, privateToAddress, toBuffer } from "ethereumjs-util";
 import { removeConsoleLog } from "hardhat-preprocessor";
+import { normalizeHardhatNetworkAccountsConfig } from "hardhat/internal/core/providers/util";
 
 import { task } from "hardhat/config";
 
@@ -26,7 +25,7 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const accounts = {
   mnemonic: process.env.MNEMONIC || "test test test test test test test test test test test junk",
   accountsBalance: "990000000000000000000",
-}
+};
 
 const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY || ""; // ignore typecheck for workflow to run
 const TEST_PRIVATE_KEY = process.env.TEST_PRIVATE_KEY ? `0x${process.env.TEST_PRIVATE_KEY}` : ZERO_ADDRESS;
@@ -53,19 +52,19 @@ const TEST_PRIVATE_KEY = process.env.TEST_PRIVATE_KEY ? `0x${process.env.TEST_PR
 //   }
 // })
 
-task("named-accounts", "Prints the list of named account", async ({getNamedAccounts}) => {
-  console.log({ namedAccounts: await getNamedAccounts() })
-})
+task("named-accounts", "Prints the list of named account", async ({ getNamedAccounts }) => {
+  console.log({ namedAccounts: await getNamedAccounts() });
+});
 
 task("block", "Prints the current block", async (_, { ethers }) => {
-  const block = await ethers.provider.getBlockNumber()
+  const block = await ethers.provider.getBlockNumber();
 
-  console.log("Current block: " + block)
-})
+  console.log("Current block: " + block);
+});
 
 task("pairs", "Prints the list of pairs", async () => {
   // ...
-})
+});
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -73,7 +72,7 @@ task("pairs", "Prints the list of pairs", async () => {
 module.exports = {
   abiExporter: {
     path: "./build/abi",
-    //clear: true,
+    // clear: true,
     flat: true,
     // only: [],
     // except: []
@@ -93,7 +92,7 @@ module.exports = {
   hardhat: {
     forking: {
       url: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_API_KEY}`,
-      blockNumber: 11979351
+      blockNumber: 11979351,
     },
   },
   // mocha: {
@@ -192,5 +191,5 @@ module.exports = {
       files: ["./contracts"],
       verbose: true,
     },
-  }
-}
+  },
+};
